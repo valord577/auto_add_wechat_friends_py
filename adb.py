@@ -16,6 +16,7 @@ import xml.etree.cElementTree as xmlParser
 class By(Enum):
     text = 'text'
     content = 'content-desc'
+    naf = 'NAF'
 
 
 class Adb:
@@ -48,6 +49,12 @@ class Adb:
 
     def adb_keyboard(self, event):
         os.system(self._baseShell + 'shell input keyevent ' + str(event))
+
+    def adb_put_back(self):
+        self.adb_keyboard(4)
+
+    def adb_back_to_desktop(self):
+        self.adb_keyboard(3)
 
     def adb_click(self, x, y):
         os.system(self._baseShell + 'shell input tap ' + str(x) + ' ' + str(y))
@@ -86,6 +93,11 @@ class Adb:
     def find_nodes_by_content(self, content, index=None):
         return self.find_nodes(content, By.content, index)
 
+    def get_bounds(self):
+        _bounds = self._nodes[0]['bounds']
+        pattern = re.compile(r'\d+')
+        return pattern.findall(_bounds)
+
     def cal_coordinate(self, index=None):
         _index = 0 if (index is None) else index
         _bounds = self._nodes[_index]['bounds']
@@ -102,25 +114,22 @@ class Adb:
 
         return self._x, self._y
 
-    def click(self, txt, by: By, xpath_index=None, cal_index=None):
-        self.find_nodes(txt, by, xpath_index)
+    def click(self, cal_index=None):
         self.cal_coordinate(cal_index)
         self.adb_click(self._x, self._y)
 
     def click_by_text(self, text, index=None):
-        self.click(text, By.text, index, 0)
+        self.find_nodes_by_text(text, index)
+        self.click(0)
 
     def click_by_content(self, content, index=None):
-        self.click(content, By.content, index, 0)
-
-    def click_after_refresh(self, txt, by: By, xpath_index=None, cal_index=None):
-        self.refresh_nodes()
-        self.click(txt, by, xpath_index, cal_index)
+        self.find_nodes_by_content(content, index)
+        self.click(0)
 
     def click_by_text_after_refresh(self, text, index=None):
         self.refresh_nodes()
-        self.click(text, By.text, index, 0)
+        self.click_by_text(text, index)
 
     def click_by_content_after_refresh(self, content, index=None):
         self.refresh_nodes()
-        self.click(content, By.content, index, 0)
+        self.click_by_content(content, index)

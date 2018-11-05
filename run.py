@@ -10,7 +10,7 @@
 import sys
 import getopt
 import platform
-from adb import Adb
+from main import Main
 
 
 def run(argv):
@@ -39,27 +39,27 @@ def run(argv):
 
     # Execute this script with default configuration
     if "-d" in o:
-        adb = Adb()
-        adb.printf()
+        fun = Main()
+        fun.main()
         sys.exit(0)
 
     # Execute this script binding the port and the device of adb.
     if "-P" in o and "-s" in o:
         print("Ps")
-        adb = Adb(port=p[o.index("-P")], device=p[o.index("-s")])
-        adb.printf()
+        fun = Main(port=p[o.index("-P")], device=p[o.index("-s")])
+        fun.main()
         sys.exit(0)
 
     # Execute this script binding the port of adb.
     if "-P" in o:
-        adb = Adb(port=p[o.index("-P")])
-        adb.printf()
+        fun = Main(port=p[o.index("-P")])
+        fun.main()
         sys.exit(0)
 
     # Execute this script binding the device of adb.
     if "-s" in o:
-        adb = Adb(device=p[o.index("-s")])
-        adb.printf()
+        fun = Main(device=p[o.index("-s")])
+        fun.main()
         sys.exit(0)
 
 
