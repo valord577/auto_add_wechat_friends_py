@@ -26,6 +26,23 @@ class Main:
         self._dict = {'success': self._success, 'failed': self._failed}
 
         self._file = file.File()
+        self._json = self._file.json()
+
+        # config.json 配置信息
+        # 查找联系人模式 file | loop
+        self._mode = self._json['mode']
+        # 循环首尾 包含首 不包含尾
+        self._loop = self._json['loop']
+        # 文件路径 手机号码一行一个
+        self._file = self._json['file']
+        # 自动切换账号 微信登录 微信预留账号
+        self._account = self._json['account']
+        # 累计查找结果达到指定个数 会从内存写入到文件
+        self._dump = self._json['dump']
+        # 切换账号达到一定次数 会休眠 单位分钟
+        self._sleep = self._json['sleep']
+        # 切换账号指定次数
+        self._sleep_flag = self._json['sleep-flag']
 
     # 输出添加结果到内存 或 文件
     def push(self, key: str, value):
@@ -34,7 +51,7 @@ class Main:
         _list.append(value)
 
         # list到一定长度 输出到文件
-        if 10 == len(_list):
+        if int(self._dump) == len(_list):
             self._file.dump(_list, key)
 
     def init(self):
@@ -61,9 +78,9 @@ class Main:
 
             print(' ---- 计算切换账号次数 ----')
             self._flag += 1
-            if 4 == self._flag:
+            if int(self._sleep_flag) == self._flag:
                 print(' ---- 休眠半小时 ----')
-                time.sleep(30 * 60)
+                time.sleep(int(self._sleep) * 60)
                 self._flag = 0
             else:
                 print(' ---- 开始切换账号 ----')
@@ -87,10 +104,10 @@ class Main:
                 # 判断当前使用哪个账号
                 self._adb.refresh_nodes()
 
-                self._adb.find_nodes_by_text('+8617376509219')
+                self._adb.find_nodes_by_text(self._account[0])
                 left = float(self._adb.get_bounds()[0])
 
-                self._adb.find_nodes_by_text('xiaomihehuo')
+                self._adb.find_nodes_by_text(self._account[1])
                 right = float(self._adb.get_bounds()[0])
 
                 self._adb.find_nodes_by_text('当前使用')
@@ -174,11 +191,16 @@ class Main:
 
     def main(self):
         self.init()
-        with self._file.open('/data/name.txt') as f:
-            for line in f:
-                line = file.delete_line_breaks(line)
+
+        if 'file' == self._mode:
+            with self._file.open(self._file) as f:
+                for line in f:
+                    line = file.delete_line_breaks(line)
+                    self.add_friends(line)
+                f.close()
+        elif 'loop' == self._mode:
+            for line in range(int(self._loop[0]), int(self._loop[1])):
                 self.add_friends(line)
-            f.close()
 
         # 输出最后的添加结果
         self._file.dump(self._success, 'success')

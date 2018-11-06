@@ -17,11 +17,6 @@ def delete_line_breaks(line: str):
     return line.rstrip('\n') if line.__contains__('\n') else line
 
 
-# json格式化
-def to_json(fp):
-    return json.load(fp)
-
-
 class File:
     def __init__(self):
         self._basePath = os.path.dirname(__file__)
@@ -42,3 +37,10 @@ class File:
             f.close()
         # 清空列表
         _list.clear()
+
+    def json(self):
+        with self.open('/config/config.json') as f:
+            o = json.load(f)
+            f.close()
+
+        return o
