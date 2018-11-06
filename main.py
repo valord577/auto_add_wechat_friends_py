@@ -200,7 +200,7 @@ class Main:
                 f.close()
         elif 'loop' == self._mode:
             for line in range(int(self._loop[0]), int(self._loop[1])):
-                self.add_friends(line)
+                self.add_friends(str(line))
 
         # 输出最后的添加结果
         self._file.dump(self._success, 'success')
