@@ -9,6 +9,7 @@
 
 import os
 import re
+from plat import adb_path
 from enum import Enum
 import xml.etree.cElementTree as xmlParser
 
@@ -28,7 +29,7 @@ class Adb:
         self._s = '' if (device is None) else '-s ' + str(device) + ' '
 
         # 指定端口 指定设备 组装adb命令
-        self._baseShell = 'adb ' + self._p + self._s
+        self._baseShell = adb_path() + 'adb ' + self._p + self._s
         # 获取该文件(adb.py) 所在对文件夹路径
         self._basePath = os.path.dirname(__file__)
 
