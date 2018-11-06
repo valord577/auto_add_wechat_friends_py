@@ -7,6 +7,7 @@
 * python version > 3.3
 * android手机打开usb调试
 * android手机允许模拟点击(一部分手机有 如小米6x)
+* 运行结果会以txt文件格式导出 (目录自动创建) ./result/${yyyyMMdd}/*.txt
 
 > python run.py
 > * 提示使用 python run.py -h 或 python run.py --help
@@ -30,8 +31,18 @@
 
 ## 配置环境
 
+> * ./config/config.json 配置: <br>
+    - mode => 添加联系人模式 file | loop <br>
+    - loop => 循环首尾 包含首 不包含尾 <br>
+    - file => 文件相对路径 手机号码一行一个 自动处理换行符\n <br>
+    - account => 自动切换账号 微信登录 微信预留账号 <br>
+    - dump => 累计查找结果达到指定个数 会从内存写入到文件 <br>
+    - sleep => 休眠时间 单位分钟 <br>
+    - sleep-flag => 查找失败 会切换账号 切换账号到指定次数 会休眠
+    
 > * 安装python环境 选择大于3.3的版本 <br>
     centos7 参考链接 [「点击转跳」](https://segmentfault.com/a/1190000015628625)
+
 > * 创建python独立虚拟环境: <br>
     1. # pip3 install --upgrade pip virtualenv setuptools <br>
     2. # virtualenv --no-site-packages venv <br>
