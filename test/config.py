@@ -7,9 +7,16 @@
  @time: 2018/11/6 12:44
 """
 
+import os
+import sys
+import platform
 import file
 
 if __name__ == '__main__':
+    print(platform.system())
+    print(sys.platform)
+    print(os.uname())
+
     ff = file.File()
     print(ff.json())
     print(ff.json()['mode'])
